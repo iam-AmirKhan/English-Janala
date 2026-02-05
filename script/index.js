@@ -4,25 +4,34 @@ const loadLessons = () => {
     .then((json) => displayLesson(json.data));
 };
 
+const removeActive = () => {
+  const lessonButtons = document.querySelectorAll(".lesson-btn");
+  lessonButtons.forEach((btn) => btn.classList.remove("active"))
+};
+
 const loadLevelWord = (id) => {
   const url = `https://openapi.programming-hero.com/api/level/${id}`;
   fetch(url)
     .then((res) => res.json())
-    .then((data) => displayLevelWord(data.data));
+    .then((data) => {
+      removeActive();
+      const clickBtn = document.getElementById(`lesson-btn-${id}`);
+      clickBtn.classList.add("active");
+      displayLevelWord(data.data);
+    });
 };
 
 const displayLevelWord = (words) => {
   const wordContainer = document.getElementById("word-container");
   wordContainer.innerHTML = "";
 
-
-//   {
-//     "id": 90,
-//     "level": 1,
-//     "word": "Water",
-//     "meaning": "পানি",
-//     "pronunciation": "ওয়াটার"
-// } 
+  //   {
+  //     "id": 90,
+  //     "level": 1,
+  //     "word": "Water",
+  //     "meaning": "পানি",
+  //     "pronunciation": "ওয়াটার"
+  // }
 
   words.forEach((word) => {
     // console.log(word);
@@ -54,7 +63,7 @@ const displayLesson = (lessons) => {
     // 3. create elements
     const btnDiv = document.createElement("div");
     btnDiv.innerHTML = `
-             <button onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary">
+             <button id="lesson-btn-${lesson.level_no}" onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn">
              <i class="fa-brands fa-readme"></i>
              Lesson ${lesson.lessonName}
              
@@ -65,4 +74,5 @@ const displayLesson = (lessons) => {
     levelContainer.append(btnDiv);
   }
 };
+
 loadLessons();
